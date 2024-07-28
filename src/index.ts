@@ -124,6 +124,5 @@ app.get("/:keyword/:item?", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(process.env.DISCORD_TOKEN);
   console.log(`Server is running on http://localhost:${port}`);
 });
