@@ -112,7 +112,7 @@ app.get("/:keyword/:item?", async (req, res) => {
     }
     if (containsItem == false) {
       console.log(`${itemWanted} Crocs not found!`);
-      status = "Crocs not found";
+      status = "Crocs not found!";
       await browser.close();
       await delay(300000); //5 minute delay
       await main(url);
