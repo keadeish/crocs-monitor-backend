@@ -21,10 +21,6 @@ function delay(time: number) {
     setTimeout(resolve, time);
   });
 }
-
-let productName = "gundam";
-let url = `https://www.crocs.co.uk/on/demandware.store/Sites-crocs_gb-Site/en_GB/Search-Show?q=${productName}`; //searches for Naruto
-
 interface ICrocs {
   itemName: string;
   image: string;
@@ -39,7 +35,7 @@ let itemFound = [];
 
 app.get("/:keyword/:item?", async (req, res) => {
   const { keyword, item } = req.params;
-  url = `https://www.crocs.co.uk/on/demandware.store/Sites-crocs_gb-Site/en_GB/Search-Show?q=${keyword}`; //searches for Naruto
+  let url = `https://www.crocs.co.uk/on/demandware.store/Sites-crocs_gb-Site/en_GB/Search-Show?q=${keyword}`;
   async function main(url: string) {
     let containsItem = false;
     const antibrowser = await antibotbrowser.startbrowser();
@@ -48,7 +44,7 @@ app.get("/:keyword/:item?", async (req, res) => {
     });
     const page = await browser.newPage();
     await page.goto(url);
-    //add option for item not found -> add a timeout for await
+    //add option for when one option is find (there's only one item & it brings you to the product page)
     try {
       await page.waitForSelector(".js-cx-productcard-list.ok-card-list", {
         timeout: 5000,
@@ -114,7 +110,7 @@ app.get("/:keyword/:item?", async (req, res) => {
       console.log(`${itemWanted} Crocs not found!`);
       status = "Crocs not found!";
       await browser.close();
-      await delay(300000); //5 minute delay
+      await delay(10000); //10 second delay
       await main(url);
       return status;
     }
