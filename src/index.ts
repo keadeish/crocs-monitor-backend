@@ -5,6 +5,9 @@ dotenv.config();
 const DISCORD_ID = process.env.DISCORD_ID;
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const { EmbedBuilder, WebhookClient } = require("discord.js");
+import {ICrocs} from "./Utils/interfaces"
+import {delay} from "./Utils/functions"
+
 let webhookClient = new WebhookClient({
   id: DISCORD_ID,
   token: DISCORD_TOKEN,
@@ -15,18 +18,6 @@ if (!DISCORD_ID || !DISCORD_TOKEN) {
     "DISCORD_ID or DISCORD_TOKEN is not defined in environment variables",
   );
 }
-
-function delay(time: number) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, time);
-  });
-}
-interface ICrocs {
-  itemName: string;
-  image: string;
-  link: string;
-}
-//
 import express from "express";
 const app = express();
 const port = 3000;
@@ -36,6 +27,7 @@ let itemFound = [];
 app.get("/:keyword/:item?", async (req, res) => {
   const { keyword, item } = req.params;
   let url = `https://www.crocs.co.uk/on/demandware.store/Sites-crocs_gb-Site/en_GB/Search-Show?q=${keyword}`;
+
   async function main(url: string) {
     let containsItem = false;
     const antibrowser = await antibotbrowser.startbrowser();
