@@ -39,8 +39,8 @@ app.get("/:keyword/:item?", async (req, res) => {
         ".product-name.cx-heading.text-bold.text-uppercase.mb-0.smaller.mt-10",
       );
       console.log("Retrieved instant checkout page");
-      await browser.close()
-      return res.send(currentURL)
+      await browser.close();
+      return res.send(currentURL);
     }
     //add option for when one option is find (there's only one item & it brings you to the product page)
     try {
@@ -115,7 +115,6 @@ app.get("/:keyword/:item?", async (req, res) => {
     }
   }
   await main(url);
-  
 });
 
 app.listen(port, () => {
