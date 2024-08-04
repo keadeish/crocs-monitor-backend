@@ -7,6 +7,9 @@ const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 import { ICrocs } from "./Utils/Interfaces";
 import { delay } from "./Utils/functions";
 const { EmbedBuilder, WebhookClient } = require("discord.js");
+import {ICrocs} from "./Utils/interfaces"
+import {delay} from "./Utils/functions"
+
 let webhookClient = new WebhookClient({
   id: DISCORD_ID,
   token: DISCORD_TOKEN,
@@ -24,6 +27,7 @@ let itemFound = [];
 app.get("/:keyword/:item?", async (req, res) => {
   const { keyword, item } = req.params;
   let url = `https://www.crocs.co.uk/on/demandware.store/Sites-crocs_gb-Site/en_GB/Search-Show?q=${keyword}`;
+
   async function main(url: string) {
     let containsItem = false;
     const antibrowser = await antibotbrowser.startbrowser();
