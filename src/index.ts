@@ -7,9 +7,6 @@ const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 import { ICrocs } from "./Utils/Interfaces";
 import { delay } from "./Utils/functions";
 const { EmbedBuilder, WebhookClient } = require("discord.js");
-import {ICrocs} from "./Utils/interfaces"
-import {delay} from "./Utils/functions"
-
 let webhookClient = new WebhookClient({
   id: DISCORD_ID,
   token: DISCORD_TOKEN,
