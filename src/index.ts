@@ -17,10 +17,18 @@ if (!DISCORD_ID || !DISCORD_TOKEN) {
   );
 }
 import express from "express";
+const fs = require('fs');
+const htmlContent = fs.readFileSync('crocsTestSite.html', 'utf-8');
 const app = express();
 const port = 3000;
 let status = "";
 let itemFound = [];
+
+app.get("/", async (req, res) => {
+  res.send(htmlContent);
+  //researching how to test site
+})
+
 app.get("/:keyword/:item?", async (req, res) => {
   const { keyword, item } = req.params;
   let url = `https://www.crocs.co.uk/on/demandware.store/Sites-crocs_gb-Site/en_GB/Search-Show?q=${keyword}`;
