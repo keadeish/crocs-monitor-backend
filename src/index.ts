@@ -17,14 +17,19 @@ if (!DISCORD_ID || !DISCORD_TOKEN) {
   );
 }
 import express from "express";
-const fs = require('fs');
-const htmlContent = fs.readFileSync('crocsTestSite.html', 'utf-8');
+// const fs = require('fs');
+// const htmlContent = fs.readFileSync('crocsTestSite.html', 'utf-8');
 const app = express();
 const port = 3000;
 let itemFound = [];
 
 app.get("/", async (req, res) => {
-  res.send(htmlContent);
+  res.send("Crocs Monitor :)");
+  //researching how to test site
+})
+
+app.get("/favicon.ico", async (req, res) => {
+  res.status(204).send();
   //researching how to test site
 })
 

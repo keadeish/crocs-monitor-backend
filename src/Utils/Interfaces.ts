@@ -1,5 +1,5 @@
 export interface ICrocs {
-    itemName: string;
-    image: string;
-    link: string;
-  }
+  itemName: string;
+  image: string;
+  link: string;
+}
