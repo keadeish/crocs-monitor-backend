@@ -21,7 +21,6 @@ const fs = require('fs');
 const htmlContent = fs.readFileSync('crocsTestSite.html', 'utf-8');
 const app = express();
 const port = 3000;
-let status = "";
 let itemFound = [];
 
 app.get("/", async (req, res) => {
@@ -35,19 +34,19 @@ app.get("/:keyword/:item?", async (req, res) => {
 
   async function main(url: string) {
     let containsItem = false;
-    const antibrowser = await antibotbrowser.startbrowser();
+    const antibrowser = await antibotbrowser.startbrowser(9222);  
     const browser = await puppeteer.connect({
       browserWSEndpoint: antibrowser.websokcet,
     });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: "networkidle0" }); // goes to URL & waits for page to fully load
-    await console.log("loaded page!");
+    //loaded page!
     let currentURL: string = page.url();
     if (currentURL.includes("demandware.store") == false) {
       await page.waitForSelector(
         ".product-name.cx-heading.text-bold.text-uppercase.mb-0.smaller.mt-10",
       );
-      console.log("Retrieved instant checkout page");
+    //Retrieved instant checkout page"
       await browser.close();
       return res.send(currentURL);
     }
@@ -56,7 +55,7 @@ app.get("/:keyword/:item?", async (req, res) => {
       await page.waitForSelector(".js-cx-productcard-list.ok-card-list", {
         timeout: 5000,
       });
-      console.log("Selector found!");
+    //Selector found!
     } catch (error) {
       res.send(`Error: Keyword '${keyword}' is incorrect`);
     }
@@ -111,12 +110,12 @@ app.get("/:keyword/:item?", async (req, res) => {
         });
         await browser.close();
         itemFound = [crocsName, crocsLink];
-        return res.send(`${status} ${itemFound} ${keyword}`);
+        res.send(`${itemFound} ${keyword}`);
       }
     }
     if (containsItem == false) {
       console.log(`${itemWanted} Crocs not found!`);
-      status = "Crocs not found!";
+      let status = "Crocs not found!";
       await browser.close();
       await delay(10000); //10 second delay
       await main(url);
