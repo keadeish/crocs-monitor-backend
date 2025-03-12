@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer-extra");
 const antibotbrowser = require("antibotbrowser"); //cloufdlare bypass
+const fs = require("fs");
 const dotenv = require("dotenv");
 dotenv.config();
 const DISCORD_ID = process.env.DISCORD_ID;
@@ -18,19 +19,18 @@ if (!DISCORD_ID || !DISCORD_TOKEN) {
 }
 import express from "express";
 // const fs = require('fs');
-// const htmlContent = fs.readFileSync('crocsTestSite.html', 'utf-8');
+const htmlContent = fs.readFileSync('index.html', 'utf-8');
 const app = express();
 const port = 3000;
 let itemFound = [];
 
 app.get("/", async (req, res) => {
-  res.send("Crocs Monitor :)");
-  //researching how to test site
+  // res.send("Crocs Monitor :)");
+  res.send(htmlContent)
 })
 
 app.get("/favicon.ico", async (req, res) => {
   res.status(204).send();
-  //researching how to test site
 })
 
 app.get("/:keyword/:item?", async (req, res) => {
@@ -47,7 +47,7 @@ app.get("/:keyword/:item?", async (req, res) => {
     await page.goto(url, { waitUntil: "networkidle0" }); // goes to URL & waits for page to fully load
     //loaded page!
     let currentURL: string = page.url();
-    if (currentURL.includes("demandware.store") == false) {
+    if (currentURL.includes("#search") === false) {
       await page.waitForSelector(
         ".product-name.cx-heading.text-bold.text-uppercase.mb-0.smaller.mt-10",
       );
@@ -69,13 +69,15 @@ app.get("/:keyword/:item?", async (req, res) => {
         ".js-cx-productcard-list.ok-card-list",
       );
       const items = pageText ? Array.from(pageText.querySelectorAll("li")) : [];
+      console.log(items)
       const data = items.map((e) => {
-        let itemName = e.querySelector(".ok-card")?.getAttribute("aria-label");
+        const itemName = e.querySelector(".ok-card__product-name")?.textContent?.trim() || "No Name"
         let image = e
           .querySelector(".ok-card__image-wrap")
           ?.querySelector("img")?.src;
         let link = e.querySelector(".ok-card__link")?.getAttribute("href");
-        return { itemName, image, link };
+        const status = e.querySelector(".ok-card__snipe span")?.textContent?.trim() || "no status"; // Extract "Coming Soon" text
+        return { itemName, image, link, status };
       });
       return data;
     });
@@ -90,11 +92,12 @@ app.get("/:keyword/:item?", async (req, res) => {
       let name: string = crocsData[i].itemName;
       let newName = name.toLocaleLowerCase();
       let newItemWanted = itemWanted.toLocaleLowerCase();
+      let status = crocsData[i].status
       if (
         (newName.includes(newItemWanted) || newName == newItemWanted) &&
-        containsItem == false
+        containsItem == false && status!== 'Coming Soon On The App'
       ) {
-        console.log(newItemWanted, newName);
+        console.log(newItemWanted, newName, status);
         containsItem = true;
         let itemIndex = Number(i);
         console.log(`found item ${crocsData[i].itemName}`);
@@ -104,7 +107,7 @@ app.get("/:keyword/:item?", async (req, res) => {
         const embed = new EmbedBuilder()
           .setTitle(`**${crocsName}**`)
           .setImage(`${crocsImage}`)
-          .setDescription(`**Purchase Link:** ${crocsLink}`)
+          .setDescription(`**Checkout Link:** ${crocsLink}`)
           .setColor(0x00ffff);
         webhookClient.send({
           content: ``,
@@ -115,14 +118,14 @@ app.get("/:keyword/:item?", async (req, res) => {
         });
         await browser.close();
         itemFound = [crocsName, crocsLink];
-        res.send(`${itemFound} ${keyword}`);
+        res.send(`Found: ${itemFound[0]} \n Checkout Link: ${itemFound[1]}`);
       }
     }
     if (containsItem == false) {
       console.log(`${itemWanted} Crocs not found!`);
       let status = "Crocs not found!";
       await browser.close();
-      await delay(10000); //10 second delay
+      await delay(17000); //30 second delay
       await main(url);
       return status;
     }
